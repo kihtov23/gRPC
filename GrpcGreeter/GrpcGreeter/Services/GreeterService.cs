@@ -1,5 +1,4 @@
 using Grpc.Core;
-using GrpcGreeter;
 
 namespace GrpcGreeter.Services
 {
@@ -17,6 +16,13 @@ namespace GrpcGreeter.Services
             {
                 Message = "Hello " + request.Name
             });
+        }
+
+        public override async Task StreamingFromServer(HelloRequest request, IServerStreamWriter<HelloReply> responseStream, ServerCallContext context)
+        {
+            await responseStream.WriteAsync(new HelloReply { Message = "Hello " + request.Name });
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            await responseStream.WriteAsync(new HelloReply { Message = "Hello again " + request.Name });
         }
     }
 }
